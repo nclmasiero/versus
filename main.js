@@ -1,11 +1,16 @@
+var LEVEL;
+
 function setup() {
     createCanvas(windowWidth, windowHeight);
+
+    level = new Title();
 }
 
 function draw() {
-    background(51);
+    level.tick();
 }
 
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
+    if(typeof(level.resize) === "function") level.resize();
 }
