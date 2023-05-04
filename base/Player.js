@@ -37,7 +37,7 @@ class Player {
         this.side = settings.side;
         this.game = settings.game;
 
-        this.maxBlinkDelay = 60 * 1.2;
+        this.maxBlinkDelay = 60 * 1.8;
         this.blinkDelay = 0;
         this.doRender = true;
 

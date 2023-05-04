@@ -57,7 +57,7 @@ class Enemy {
     }
 
     correctSpawnDistance() {
-        let maxDistance = this.target.radius * 6;
+        let maxDistance = this.target.radius * 10;
         let distance = dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y);
         if(distance >= maxDistance) return;
 
