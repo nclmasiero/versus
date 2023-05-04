@@ -23,7 +23,7 @@ class Player {
         this.name = "Player";
         this.position = createVector(settings.x, settings.y);
         this.speed = createVector(0, 0);
-        this.radius = 35;
+        this.radius = 25;
 
         this.color = settings.color;
 

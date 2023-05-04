@@ -17,6 +17,8 @@ class Game extends Level {
         this.addEntity(this.spawner);
 
         this.addEntity(this.interface);
+
+        this.addEntity(new Bot(this, this.players[1]));
     }
 
     update() {
@@ -57,5 +59,10 @@ class Game extends Level {
         for(let i = 0; i < amount; i++) {
             this.addEntity(new Particle(x, y));
         }
+    }
+
+    isInSide(entity, side) {
+        if (side == -1) return entity.position.x < this.separator.position;
+        if (side == 1) return entity.position.x > this.separator.position;
     }
 }
