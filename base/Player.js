@@ -55,6 +55,8 @@ class Player {
 
         this.getInput();
         this.updateBlinking();
+
+        this.updateInstantDeath();
     }
 
     render() {
@@ -65,6 +67,16 @@ class Player {
     }
 
     // FUNCTIONS //
+
+    updateInstantDeath() {
+        let sp = this.game.separator.position;
+
+        if(this.side == 1) {
+            if(width - sp <= this.radius*2) this.hit(this.maxHealth);
+        } else if(this.side == -1) {
+            if(sp <= this.radius*2) this.hit(this.maxHealth);
+        }
+    }
 
     collision(other) {
         if(this.blinkDelay > 0) return;
@@ -106,6 +118,8 @@ class Player {
         this.blink();
         this.momentumModifier = 0;
         this.momentum = 1;
+
+        this.score = round(this.score * 0.7);
 
         if(this.health <= 0) this.isDead = true;
     }

@@ -6,7 +6,7 @@ class Game extends Level {
     
     setup() {
         this.players = Player.getPlayers(this);
-        this.separator = new Separator();
+        this.separator = new Separator(this);
         this.interface = new InterfaceRenderer(this);
         this.spawner = new EnemySpawner(this);
     
@@ -20,6 +20,9 @@ class Game extends Level {
     }
 
     update() {
+        if(this.players[0].isDead) setLevel(new Victory(this.players[1]));
+        if(this.players[1].isDead) setLevel(new Victory(this.players[0]));
+
         for(let entity of this.entities) {
             if(typeof(entity.update) === "function") entity.update();
         }
@@ -33,6 +36,14 @@ class Game extends Level {
 
     render() {
         background(200);
+
+        rectMode(CORNER);
+        let rectsAlpha = 50;
+        fill(this.players[0].color.red, this.players[0].color.green, this.players[0].color.blue, rectsAlpha);
+        rect(0, 0, this.separator.position, height);
+        fill(this.players[1].color.red, this.players[1].color.green, this.players[1].color.blue, rectsAlpha);
+        rect(this.separator.position, 0, width, height);
+
         for(let entity of this.entities) {
             if(typeof(entity.render) === "function") entity.render();
         }

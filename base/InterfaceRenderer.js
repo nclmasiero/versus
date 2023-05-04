@@ -34,7 +34,10 @@ class InterfaceRenderer {
         fill(51);
         textAlign(CENTER, CENTER);
 
-        let x = this.game.separator.position + (this.game.separator.position/2 * player.side);
+        let x = this.game.separator.position/2;
+        if(player.side == 1) {
+            x = this.game.separator.position + (width - this.game.separator.position)/2;
+        }
         let y = height/15;
 
         textSize(40);

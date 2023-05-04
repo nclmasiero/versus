@@ -20,7 +20,7 @@ function windowResized() {
 
 function setLevel(level) {
     LEVEL = level;
-    LEVEL.setup();
+    if(typeof(LEVEL.setup) === "function") LEVEL.setup();
 }
 
 var playerKeys = [
