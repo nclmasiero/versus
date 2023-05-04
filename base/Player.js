@@ -40,6 +40,10 @@ class Player {
         this.maxBlinkDelay = 60 * 1.2;
         this.blinkDelay = 0;
         this.doRender = true;
+
+        this.score = 0;
+        this.momentum = 1;
+        this.momentumModifier = 0;
     }
 
     update() {
@@ -67,7 +71,7 @@ class Player {
         
         if(other.name == "Enemy") {
             this.bounceFromEntity(other);
-            other.explode();
+            other.explode(false);
             this.hit();
         }
     }
@@ -100,6 +104,8 @@ class Player {
     hit(damage=1) {
         this.health -= damage;
         this.blink();
+        this.momentumModifier = 0;
+        this.momentum = 1;
 
         if(this.health <= 0) this.isDead = true;
     }
@@ -149,5 +155,15 @@ class Player {
         let step = 1.5;
         this.speed.x += step * xDirection;
         this.speed.y += step * yDirection;
+    }
+
+    addScore(amount) {
+        this.score += amount * this.momentum;
+        this.momentumModifier++;
+
+        if(this.momentumModifier >= 20) {
+            this.momentumModifier = 0;
+            this.momentum++;
+        }
     }
 }

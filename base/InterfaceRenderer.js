@@ -6,7 +6,15 @@ class InterfaceRenderer {
 
     render() {
         for(let player of this.game.players) {
-            let toFill = player.health;
+            this.renderHealth(player);
+            this.renderScore(player);
+        }
+    }
+
+    // FUNCTIONS //
+
+    renderHealth(player) {
+        let toFill = player.health;
             let radius = 30;
 
             for(let i = 0; i < player.maxHealth; i++) {
@@ -19,6 +27,20 @@ class InterfaceRenderer {
 
                 toFill--;
             }
-        }
+    }
+
+    renderScore(player) {
+        noStroke();
+        fill(51);
+        textAlign(CENTER, CENTER);
+
+        let x = this.game.separator.position + (this.game.separator.position/2 * player.side);
+        let y = height/15;
+
+        textSize(40);
+        text(player.score, x, y);
+    
+        textSize(20);
+        text("x" + player.momentum, x + 15 + 12 * player.score.toString().length, y + 4);
     }
 }

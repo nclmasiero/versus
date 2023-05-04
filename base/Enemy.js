@@ -12,10 +12,16 @@ class Enemy {
 
         let x = random(this.maxRadius, this.game.separator.position - this.maxRadius);
         if(this.side == 1) x += this.game.separator.position;
+        let y = random(this.maxRadius, height - this.maxRadius);
 
-        this.position = createVector(x, random(height));
+        this.position = createVector(x, y);
+
+        this.correctSpawnDistance();
 
         this.spawnTime = random(1.3, 1.6); // in seconds
+
+        this.isHoming = false;
+        if(random(100) < 8) this.isHoming = true;
 
     }
 
@@ -24,6 +30,7 @@ class Enemy {
         else {
             if(this.speed == null) this.speed = this.getSpeed();
             else {
+                if(this.isHoming) this.speed = this.getSpeed();
                 this.position.add(this.speed);
 
                 this.checkBorders();                
@@ -35,7 +42,10 @@ class Enemy {
         stroke(51);
         strokeWeight(2);
         fill(200, 50, 50);
-        circle(this.position.x, this.position.y, this.radius*2);
+        if(this.isHoming) {
+            rectMode(CENTER);
+            rect(this.position.x, this.position.y, this.radius*2, this.radius*2);
+        } else circle(this.position.x, this.position.y, this.radius*2);
     }
 
     // FUNCTIONS //
@@ -44,6 +54,19 @@ class Enemy {
         if(other.name == "Enemy") {
             this.explode();
         }
+    }
+
+    correctSpawnDistance() {
+        let maxDistance = this.target.radius * 6;
+        let distance = dist(this.position.x, this.position.y, this.target.position.x, this.target.position.y);
+        if(distance >= maxDistance) return;
+
+        let correctionVector = createVector(this.position.x, this.position.y);
+        correctionVector.sub(this.target.position);
+        correctionVector.setMag(maxDistance);
+        this.position.x = this.target.position.x;
+        this.position.y = this.target.position.y;
+        this.position.add(correctionVector);
     }
 
     checkBorders() {
@@ -66,8 +89,9 @@ class Enemy {
         return targetPosition;
     }
 
-    explode() {
+    explode(isPositive = true) {
         this.game.particleEffect(this.position.x, this.position.y, 3);
+        if(isPositive) this.target.addScore(1);
         this.isDead = true;
     }
 }

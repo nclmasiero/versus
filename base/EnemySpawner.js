@@ -2,7 +2,7 @@ class EnemySpawner {
     constructor(game) {
         this.game = game;
 
-        this.frequencies = [0, 0];
+        this.frequencies = [60, 60];
     }
 
     update() {
@@ -20,7 +20,8 @@ class EnemySpawner {
     }
 
     updateFrequencies() {
-        this.frequencies[0] = 60;
-        this.frequencies[1] = 60;
+        for(let i = 0; i < this.frequencies.length; i++) {
+            this.frequencies[i] = max(15, this.frequencies[i]);
+        }
     }
 }
