@@ -1,6 +1,6 @@
 class Player {
 
-    static getPlayers() {
+    static getPlayers(game) {
         let ret = [];
         for(let i = 0; i < 2; i++) {
             ret.push(new Player({
@@ -11,13 +11,16 @@ class Player {
                     green: random(100, 200),
                     blue: random(100, 200)
                 },
-                keys: getNextPlayerKeys()
+                side: -1 + 2*i,
+                keys: getNextPlayerKeys(),
+                game: game
             }))
         }
         return ret;
     }
 
     constructor(settings) {
+        this.name = "Player";
         this.position = createVector(settings.x, settings.y);
         this.speed = createVector(0, 0);
         this.radius = 35;
@@ -27,6 +30,16 @@ class Player {
         this.keys = settings.keys;
 
         this.renderPriority = 10;
+
+        this.maxHealth = 3;
+        this.health = this.maxHealth;
+
+        this.side = settings.side;
+        this.game = settings.game;
+
+        this.maxBlinkDelay = 60 * 1.2;
+        this.blinkDelay = 0;
+        this.doRender = true;
     }
 
     update() {
@@ -34,17 +47,70 @@ class Player {
         this.applyFriction();
         this.capSpeed();
 
+        this.checkBorders();
+
         this.getInput();
+        this.updateBlinking();
     }
 
     render() {
         stroke(51);
         strokeWeight(2);
         fill(this.color.red, this.color.green, this.color.blue);
-        circle(this.position.x, this.position.y, this.radius*2);
+        if(this.doRender) circle(this.position.x, this.position.y, this.radius*2);
     }
 
     // FUNCTIONS //
+
+    collision(other) {
+        if(this.blinkDelay > 0) return;
+        
+        if(other.name == "Enemy") {
+            this.bounceFromEntity(other);
+            other.explode();
+            this.hit();
+        }
+    }
+
+    blink() {
+        this.blinkDelay = this.maxBlinkDelay;
+    }
+
+    updateBlinking() {
+        this.blinkDelay = max(0, this.blinkDelay - 1);
+        if(this.blinkDelay > 0) {
+            if(frameCount % 10 == 0) this.doRender = !this.doRender;
+        } else this.doRender = true;
+    }
+
+    checkBorders() {
+        if(this.position.x > width - this.radius) this.position.x = width - this.radius;
+        if(this.position.x < this.radius) this.position.x = this.radius;
+
+        if(this.side == -1) {
+            if(this.position.x > this.game.separator.position - this.radius) this.position.x = this.game.separator.position - this.radius;
+        } else {
+            if(this.position.x < this.game.separator.position + this.radius) this.position.x = this.game.separator.position + this.radius;
+        }
+
+        if(this.position.y < 0) this.position.y = 0;
+        if(this.position.y > height) this.position.y = height;
+    }
+
+    hit(damage=1) {
+        this.health -= damage;
+        this.blink();
+
+        if(this.health <= 0) this.isDead = true;
+    }
+
+    bounceFromEntity(other) {
+        let bounceVector = createVector(this.position.x, this.position.y);
+        bounceVector.sub(other.position);
+        let force = 10;
+        bounceVector.setMag(force);
+        this.speed.add(bounceVector);
+    }
 
     applySpeed() {
         this.position.add(this.speed);

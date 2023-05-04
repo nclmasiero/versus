@@ -3,11 +3,12 @@ var LEVEL;
 function setup() {
     createCanvas(windowWidth, windowHeight);
 
-    level = new Game();
+    LEVEL = new Game();
+    LEVEL.setup();
 }
 
 function draw() {
-    level.tick();
+    LEVEL.tick();
 }
 
 function windowResized() {
@@ -16,6 +17,11 @@ function windowResized() {
 }
 
 // FUNCTIONS //
+
+function setLevel(level) {
+    LEVEL = level;
+    LEVEL.setup();
+}
 
 var playerKeys = [
     {
